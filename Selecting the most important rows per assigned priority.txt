@@ -38,10 +38,10 @@ val ids = Seq(
 
 val mins = ids.join(priorities).where($"priority" === $"name").groupBy("id").agg(min("rank") as "min")
 
-val q = mins.join(priorities).where($"min" === $"rank").select("id", "name")
+val solution = mins.join(priorities).where($"min" === $"rank").select("id", "name")
 
 
-q.show
+solution.show
 
 +---+----+
 | id|name|
