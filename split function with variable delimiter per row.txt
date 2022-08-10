@@ -20,9 +20,9 @@ dept.show
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 Solution
-val dept2 = dept.withColumn("Delimiter", concat(lit("\\"), $"Delimiter")).withColumn("split_values", expr("split(VALUES, Delimiter)"))
+val solution = dept.withColumn("Delimiter", concat(lit("\\"), $"Delimiter")).withColumn("split_values", expr("split(VALUES, Delimiter)"))
 
-dept2.show
+solution.show
 +-------------------+---------+--------------------+
 |             VALUES|Delimiter|        split_values|
 +-------------------+---------+--------------------+
