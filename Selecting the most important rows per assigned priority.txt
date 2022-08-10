@@ -1,0 +1,51 @@
+Write a structured query that selects the most important rows per assigned priority.
+
+Problem
+
+val input = Seq(
+  (1, "MV1"),
+  (1, "MV2"),
+  (2, "VPV"),
+  (2, "Others")).toDF("id", "value")
+  
+  
+ input.show 
+ 
++---+------+
+| id| value|
++---+------+
+|  1|   MV1|
+|  1|   MV2|
+|  2|   VPV|
+|  2|Others|
++---+------+
+
+----------------------------------------------------------------------------------------------------------------
+
+Solution
+
+val priorities = Seq(
+  "MV1",
+  "MV2",
+  "VPV",
+  "Others").zipWithIndex.toDF("name", "rank")
+
+val ids = Seq(
+  (1, "MV1"),
+  (1, "MV2"),
+  (2, "VPV"),
+  (2, "Others")).toDF("id", "priority")
+
+val mins = ids.join(priorities).where($"priority" === $"name").groupBy("id").agg(min("rank") as "min")
+
+val q = mins.join(priorities).where($"min" === $"rank").select("id", "name")
+
+
+q.show
+
++---+----+
+| id|name|
++---+----+
+|  1| MV1|
+|  2| VPV|
++---+----+
