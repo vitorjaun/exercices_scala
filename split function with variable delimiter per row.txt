@@ -1,0 +1,33 @@
+Write a structured query that splits a column by using delimiters from another column.
+
+Problem
+val dept = Seq(
+  ("50000.0#0#0#", "#"),
+  ("0@1000.0@", "@"),
+  ("1$", "$"),
+  ("1000.00^Test_string", "^")).toDF("VALUES", "Delimiter")
+  
+dept.show
++-------------------+---------+
+|             VALUES|Delimiter|
++-------------------+---------+
+|       50000.0#0#0#|        #|
+|          0@1000.0@|        @|
+|                 1$|        $|
+|1000.00^Test_string|        ^|
++-------------------+---------+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Solution
+val dept2 = dept.withColumn("Delimiter", concat(lit("\\"), $"Delimiter")).withColumn("split_values", expr("split(VALUES, Delimiter)"))
+
+dept2.show
++-------------------+---------+--------------------+
+|             VALUES|Delimiter|        split_values|
++-------------------+---------+--------------------+
+|       50000.0#0#0#|       \#|   [50000.0, 0, 0, ]|
+|          0@1000.0@|       \@|       [0, 1000.0, ]|
+|                 1$|       \$|               [1, ]|
+|1000.00^Test_string|       \^|[1000.00, Test_st...|
++-------------------+---------+--------------------+
